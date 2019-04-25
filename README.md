@@ -1,0 +1,3 @@
+# MonsterSlayer
+
+npx live-server

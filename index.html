@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+<audio autoplay loop>
+  <source src="assets/Our-Mountain_v003_Looping.mp3" type="audio/mpeg">
+</audio>
+
+    <div id="app">
+        <section class="row">
+            <div class="small-6 columns" style="display: flex; flex-direction: column">
+                <h1 class="text-center">{{battlers[0]}}</h1>
+                <div style="flex-direction: row !important;">
+                    <div class="mario" :class="{'mario-attack': you.attacking, 'mario-idle': !you.attacking}">
+                        <div :class="{'potion': you.healing, 'shield': you.blocking, 'fireball': you.specialTriggered}"></div>
+                    </div>
+                </div>
+                <div class="healthbar">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: red;" :style="{width: you.health + '%'}">
+                        {{you.health}}
+                    </div>
+                </div>
+            </div>
+            <div class="small-6 columns" style="display: flex; flex-direction: column">
+                <h1 class="text-center">{{battlers[1]}}</h1>
+                <div class="monster" :class="{'monster-attack': monster.attacking, 'monster-idle': !monster.attacking, 'monsterWin': gameLost}"></div>
+                <div class="healthbar">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: red;" :style="{width: monster.health + '%'}">
+                        {{monster.health}}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row controls" v-if="!startedGame">
+            <div class="small-12 columns">
+                <button id="start-game" @click="startGame()">START NEW GAME</button>
+            </div>
+        </section>
+        <section class="row controls" v-else>
+            <div class="small-12 columns">
+                <button id="attack" @click="attack()">ATTACK</button>
+                <button id="special-attack" @click="specialAttack()">SPECIAL ATTACK
+                    <b>{{you.specialAttack}}</b>
+
+                </button>
+                <button id="shield" @click="shield()">SHIELD</button>
+
+                <button id="heal" @click="heal()">HEAL
+                    <b>{{you.heal}}</b>
+
+                </button>
+                <button id="give-up" @click="giveUp()">GIVE UP</button>
+            </div>
+        </section>
+        <section class="row log" v-show="turns.length">
+            <div class="small-12 columns">
+                <ul>
+                    <li v-for="(move, index) in turns" :class="[{'player-turn': index%2==0},{'monster-turn': index%2==1}]">
+                        <div v-if="move.type ==='HEALS'">
+                            {{battlers[index%2]}} {{move.type}} YOURSELF FOR {{move.points}}
+                        </div>
+                        <div v-else-if="move.type ==='SHIELD'">
+                            <span v-if="move.points === 0">{{battlers[index%2]}} PERFORMED A PERFECT SHIELD  </span>
+                            <span v-else-if="move.points === 1">{{battlers[index%2]}} SHIELD WAS INEFFECTIVE  </span>
+                            <span v-else>{{battlers[index%2]}} PERFORMED a 1/{{move.points}} DAMAGE SHIELD   </span>
+                        </div>
+                        <div v-else>
+                            {{battlers[index%2]}} {{move.type}} {{battlers[(index+1)%2]}} FOR {{move.points}}
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.0.min.js"
+      integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="vue.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
